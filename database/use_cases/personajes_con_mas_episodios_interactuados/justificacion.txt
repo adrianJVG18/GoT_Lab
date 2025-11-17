@@ -1,14 +1,43 @@
-Para "personajes con más apariciones de episodios", MongoDB ofrece ventajas técnicas decisivas:
-Pipeline de agregación potente con operadores especializados ($addToSet, $size) que
-permiten eliminar duplicados y contar eficientemente
-Modelo de documentos flexible que facilita inserciones incrementales y análisis ad-hoc
-Optimización de índices para mejorar el rendimiento de agregaciones
-Procesamiento en memoria eficiente para análisis estadísticos sin pre-cálculo
-Expresividad y mantenibilidad del pipeline declarativo
-Escalabilidad para consultas analíticas distribuidas
+Consulta: ¿Qué personajes han aparecido en más episodios?
 
-Mientras que Cassandra es excelente para consultas predefinidas de alto
-rendimiento y Neo4j para análisis de relaciones complejas,
-MongoDB es la opción óptima para este caso de uso que requiere agregaciones a
-nalíticas flexibles, eliminación de duplicados y análisis estadísticos sobre
-colecciones de eventos.
+Dominio: Juego de Tronos - Análisis de frecuencia de aparición.
+
+Esta consulta requiere contar episodios únicos por personaje y realizar
+un ranking, representando un patrón clásico de agregación y ordenamiento.
+
+Se evaluó este caso de uso en cada una de las bases de datos vistos en
+clase, y llegamos a las siguientes conclusiones:
+
+SQL Server (Base de Datos Relacional)
+No elegimos SQL Server porque aunque puede realizar esta consulta
+eficientemente con COUNT(DISTINCT) y GROUP BY, el modelo relacional
+requiere una tabla normalizada que puede generar overhead en inserciones
+y mantenimiento para este tipo específico de consulta analítica.
+
+MongoDB (Base de Datos Documental)
+Elegimos MongoDB porque para consultas de agregación con agrupación y
+conteo de valores únicos, el pipeline de agregación ofrece un rendimiento
+óptimo y un modelado natural. La combinación de $addToSet con $size permite
+resolver eficientemente el conteo de episodios únicos por personaje en una
+sola operación de base de datos.
+
+Cassandra (Base de Datos Columnar)
+Descartamos Cassandra porque su modelo no está optimizado para consultas de
+agregación que requieran COUNT DISTINCT sobre múltiples particiones.
+Este tipo de consultas analíticas necesitarían tablas precomputadas o
+procesamiento externo en Cassandra.
+
+Neo4j (Base de Datos de Grafos)
+No seleccionamos Neo4j porque esta consulta es puramente analítica sobre
+propiedades de entidades individuales y no aprovecha las relaciones entre nodos.
+El conteo de apariciones por personaje no requiere traversing de grafos.
+
+JUSTIFICACIÓN TÉCNICA FINAL
+La selección de MongoDB se basa en la eficiencia de su pipeline de agregación
+para operaciones de agrupación y conteo de valores únicos. La combinación de
+$group con $addToSet seguido de $size permite resolver el problema de
+"episodios únicos por personaje" de manera nativa y optimizada.
+Mientras las bases relacionales requerirían COUNT(DISTINCT) y las columnar
+ necesitarían precomputación, MongoDB ofrece un balance perfecto entre
+ flexibilidad del modelo documental y rendimiento en operaciones de
+ agregación analítica.

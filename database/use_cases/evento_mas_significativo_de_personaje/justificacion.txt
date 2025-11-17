@@ -1,7 +1,44 @@
-Para "eventos más significativos" con grandes volúmenes de datos históricos y necesidad de alto rendimiento durante picos de tráfico (especialmente en estrenos de episodios), Cassandra ofrece ventajas técnicas decisivas:
-Escalabilidad horizontal para manejar millones de eventos sin degradación
-Rendimiento optimizado en lecturas concurrentes masivas mediante ordenamiento nativo en disco
-Distribución automática de carga durante picos de tráfico sin cuellos de botella
-Escrituras eficientes para actualizaciones masivas cuando se estrenan episodios
-Alta disponibilidad sin puntos únicos de fallo durante alta carga
-Modelo optimizado para consultas predecibles de alto volumen
+Consulta: ¿Cuál es el evento más significativo para cada personaje?
+
+Dominio: Juego de Tronos - Análisis de hitos narrativos.
+
+Se evaluó este caso de uso en cada una de las bases de datos vistos en clase,
+y llegamos a las siguientes conclusiones:
+
+SQL Server (Base de Datos Relacional)
+No elegimos SQL Server porque para consultas que requieren ranking por grupo
+con posibles empates, el modelo relacional necesita funciones de ventana
+complejas o múltiples subconsultas. La operación "evento más significativo
+por personaje" requiere particionamiento y ordenamiento que, aunque posible,
+genera consultas con múltiples JOINs y menor rendimiento.
+
+MongoDB (Base de Datos Documental)
+Descartamos MongoDB porque aunque puede almacenar eventos como documentos embebidos,
+ las consultas de agregación para encontrar el máximo por grupo requieren pipelines
+ complejos con $group, $sort y $first, generando overhead computacional y menor
+ eficiencia en consultas masivas.
+
+Cassandra (Base de Datos Columnar)
+Elegimos Cassandra porque para consultas de "top por clave" con ordenamiento
+descendente, el modelo columnar ofrece rendimiento óptimo. La estructura
+PRIMARY KEY (nombre_personaje, nivel_significancia DESC) permite recuperar
+directamente el evento más significativo de cada personaje en una sola operación
+de lectura, con complejidad O(1) por personaje.
+
+Neo4j (Base de Datos de Grafos)
+No seleccionamos Neo4j porque aunque puede modelar relaciones evento-personaje,
+las consultas de agregación máxima por entidad no aprovechan sus fortalezas
+principales de navegación de grafos, resultando en operaciones menos eficientes
+que la solución Cassandra.
+
+JUSTIFICACIÓN TÉCNICA FINAL
+La selección de Cassandra se basa en su arquitectura optimizada para consultas
+de acceso por clave con ordenamiento predefinido. La capacidad de definir
+CLUSTERING ORDER BY (nivel_significancia DESC) en la clave primaria garantiza
+ que para cada personaje, los eventos estén físicamente almacenados en
+ orden de significancia, permitiendo recuperar el evento más importante
+  con una simple lectura del primer registro por partition key.
+  Esta ventaja física en el almacenamiento, combinada con la eficiencia
+  de Cassandra en lecturas por clave, proporciona el mejor rendimiento
+  posible para el patrón de consulta "valor máximo por grupo" en grandes
+  volúmenes de datos.
