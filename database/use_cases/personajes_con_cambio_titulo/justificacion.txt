@@ -1,0 +1,4 @@
+✔ Soporta documentos pequeños repetidos
+✔ Soporta miles de inserts baratos
+✔ Su agregación es muy buena ($group, $match)
+✔ El query te queda simple y directo

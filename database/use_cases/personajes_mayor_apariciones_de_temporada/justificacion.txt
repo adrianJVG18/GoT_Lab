@@ -1,0 +1,20 @@
+Se optó por MongoDB como motor NoSQL principal debido a que el caso de uso
+requiere realizar agregaciones, conteos y ordenamientos dinámicos sobre
+los datos, específicamente para determinar qué personajes aparecen en el
+mayor número de temporadas. MongoDB, a diferencia de Cassandra, ofrece
+ un framework de agregación nativo que permite ejecutar operaciones
+ como $group, $count, $sort y $project de manera eficiente y
+ sin necesidad de precomputar resultados o crear tablas derivadas.
+
+Además, MongoDB permite modelar las apariciones de manera flexible mediante
+documentos o colecciones relacionadas, facilitando consultas analíticas sin
+duplicación excesiva de datos. Su naturaleza orientada a documentos y su
+capacidad para resolver consultas complejas directamente desde
+el motor lo convierten en la mejor opción para este escenario.
+
+En contraste, Cassandra no soporta agregaciones ni ordenamientos complejos,
+y obligaría a preprocesar la información desde la aplicación, mientras que
+Neo4j, aunque adecuado para relaciones, introduce una complejidad
+adicional que no es necesaria para este tipo de análisis numérico directo.
+Por estos motivos, MongoDB presenta el balance más eficiente y práctico para
+los requerimientos planteados.

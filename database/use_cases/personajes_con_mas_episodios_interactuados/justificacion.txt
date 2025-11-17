@@ -1,0 +1,14 @@
+Para "personajes con más apariciones de episodios", MongoDB ofrece ventajas técnicas decisivas:
+Pipeline de agregación potente con operadores especializados ($addToSet, $size) que
+permiten eliminar duplicados y contar eficientemente
+Modelo de documentos flexible que facilita inserciones incrementales y análisis ad-hoc
+Optimización de índices para mejorar el rendimiento de agregaciones
+Procesamiento en memoria eficiente para análisis estadísticos sin pre-cálculo
+Expresividad y mantenibilidad del pipeline declarativo
+Escalabilidad para consultas analíticas distribuidas
+
+Mientras que Cassandra es excelente para consultas predefinidas de alto
+rendimiento y Neo4j para análisis de relaciones complejas,
+MongoDB es la opción óptima para este caso de uso que requiere agregaciones a
+nalíticas flexibles, eliminación de duplicados y análisis estadísticos sobre
+colecciones de eventos.

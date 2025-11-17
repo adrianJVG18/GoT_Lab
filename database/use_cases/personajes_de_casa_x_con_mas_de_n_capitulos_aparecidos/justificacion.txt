@@ -1,0 +1,48 @@
+MongoDB (Base de Datos Documental)
+
+Descartamos MongoDB porque su modelo documental fragmenta las relaciones
+familiares en documentos aislados, imposibilitando consultas nativas de conexiones
+cruzadas entre casas. En el almacenamiento, cada personaje almacena referencias a sus
+relaciones pero sin contexto estructural del grafo familiar completo. Para consultas como
+"Lannisters casados con otras casas", MongoDB requiere ejecutar múltiples operaciones
+secuenciales: primero obtener todos los Lannisters, luego para cada uno recuperar sus
+documentos de relaciones, después buscar individualmente cada pareja referenciada, y
+finalmente filtrar manualmente por casa, generando una complejidad operacional
+O(m×n) donde cada relación requiere reconstrucción manual desde documentos
+dispersos. Esta aproximación no solo es ineficiente para datos interconectados, sino que
+traslada toda la lógica de traversing y filtrado cruzado a la aplicación, perdiendo las
+ventajas de procesamiento en base de datos
+
+Cassandra (Base de Datos Columnar)
+
+No seleccionamos Cassandra porque en el almacenamiento requeriría tablas
+especializadas como "matrimonios_por_casa" o "parejas_por_familia", duplicando
+información y creando overhead de mantenimiento para el filtrado entre grupos. En
+consultas, para encontrar Lannisters con parejas externas necesitaríamos escanear
+múltiples tablas o mantener una tabla específica para este patrón de consulta, limitando
+la flexibilidad para nuevas preguntas que involucren condiciones cruzadas entre
+diferentes propiedades.
+
+
+Neo4j (Base de Datos de Grafos)
+
+Elegimos Neo4j porque en el almacenamiento las relaciones de matrimonio son
+conexiones directas entre nodos que conservan sus propiedades de casa, permitiendo el
+cross-house filtering nativo. En consultas, operaciones como "Lannisters casados con
+no-Lannisters" se resuelven con un simple traversing que sigue relaciones específicas y
+aplica condiciones cruzadas sobre propiedades de nodos conectados, todo en una
+operación nativa eficiente que evalúa ambos contextos simultáneamente sin necesidad
+de reconstrucción manual.
+
+JUSTIFICACIÓN TÉCNICA FINAL
+
+La selección de Neo4j se basa en su capacidad superior para manejar condiciones
+cruzadas y cross-house filtering de manera nativa y eficiente. Mientras las bases
+tradicionales requieren reconstruir manualmente las conexiones entre entidades y luego
+aplicar filtros separados sobre propiedades dispersas, Neo4j puede navegar
+directamente las relaciones y aplicar filtrados cruzados sobre múltiples nodos
+conectados en una sola operación. Esta capacidad es crucial para consultas que
+involucran evaluación simultánea de propiedades en ambos extremos de una relación,
+proporcionando un rendimiento óptimo para análisis de alianzas y relaciones entre
+familias como en Juego de Tronos, donde el contexto cruzado entre casas es fundamental
+para el entendimiento político y estratégico.

@@ -1,0 +1,39 @@
+MongoDB (Base de Datos Documental)
+
+Descartamos MongoDB porque en el almacenamiento los documentos mantienen
+referencias embebidas que requieren duplicación de IDs. En consultas, para
+relaciones familiares necesitamos ejecutar múltiples búsquedas secuenciales:
+primero el personaje, luego sus padres, después los hermanos de los padres, y
+finalmente los hijos de esos hermanos. Esta aproximación traslada la complejidad
+al código de aplicación y genera latencia acumulativa.
+
+
+Cassandra (Base de Datos Columnar)
+
+No seleccionamos Cassandra porque en el almacenamiento requiere duplicación
+masiva de datos en múltiples tablas: una para padres, otra para hijos, otra para
+hermanos, etc. En consultas, aunque son rápidas para acceso directo,
+necesitamos ejecutar varias consultas a diferentes tablas y consolidar resultados
+manualmente. Cada nuevo personaje requiere actualizar todas las tablas
+relacionadas, creando overhead de mantenimiento.
+
+
+Neo4j (Base de Datos de Grafos)
+
+Elegimos Neo4j porque en el almacenamiento las relaciones son elementos
+nativos con mínimo overhead, usando pointers directos entre nodos. En
+consultas, operaciones como "primos de Jon Snow" se resuelven con una sola
+operación de traversing donde la base de datos sigue naturalmente las
+conexiones. Esto proporciona complejidad O(k) en lugar de O(n³) y elimina la
+necesidad de reconstrucción manual de relaciones.
+
+
+JUSTIFICACIÓN TÉCNICA FINAL
+
+La selección de Neo4j se basa en ventajas técnicas concretas en
+almacenamiento y consultas: minimiza la duplicación de datos, elimina la
+necesidad de operaciones complejas de unión, y proporciona un modelo que
+coincide naturalmente con la semántica del dominio. Para un sistema donde las
+relaciones son fundamentales, Neo4j ofrece eficiencia demostrable tanto en uso
+de almacenamiento como en performance de consultas sobre las alternativas
+relacionales, documentales y columnares.

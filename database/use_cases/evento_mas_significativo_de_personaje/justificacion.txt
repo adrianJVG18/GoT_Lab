@@ -1,0 +1,7 @@
+Para "eventos más significativos" con grandes volúmenes de datos históricos y necesidad de alto rendimiento durante picos de tráfico (especialmente en estrenos de episodios), Cassandra ofrece ventajas técnicas decisivas:
+Escalabilidad horizontal para manejar millones de eventos sin degradación
+Rendimiento optimizado en lecturas concurrentes masivas mediante ordenamiento nativo en disco
+Distribución automática de carga durante picos de tráfico sin cuellos de botella
+Escrituras eficientes para actualizaciones masivas cuando se estrenan episodios
+Alta disponibilidad sin puntos únicos de fallo durante alta carga
+Modelo optimizado para consultas predecibles de alto volumen
